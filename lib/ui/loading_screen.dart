@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import '../theme/stitch_theme.dart';
 import '../screens/meter_screen.dart';
 
@@ -13,25 +14,44 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+    // Remove native splash when first frame is ready
+    FlutterNativeSplash.remove();
+    
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    );
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+      ),
     );
 
-    _controller.forward();
+    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOutSine,
+      ),
+    );
 
-    // Navigate to MeterScreen after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
+    // Navigate to MeterScreen after 2.5 seconds
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MeterScreen()),
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => const MeterScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 800),
+          ),
         );
       }
     });
@@ -47,51 +67,58 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // G9 Logo Image
-              Image.asset(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Animated Logo (Pulsing)
+            ScaleTransition(
+              scale: _scaleAnimation,
+              child: Image.asset(
                 'assets/icon/icon.png',
-                width: 160,
-                height: 160,
+                width: 180,
+                height: 180,
               ),
-              const SizedBox(height: 48),
-              // App Name
-              Text(
-                'SWARAM',
-                style: GoogleFonts.inter(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w200,
-                  color: Colors.white.withOpacity(0.9),
-                  letterSpacing: 8,
-                ),
+            ),
+            const SizedBox(height: 48),
+            // App Name with subtle fade
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Column(
+                children: [
+                  Text(
+                    'SWARAM',
+                    style: GoogleFonts.inter(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w200,
+                      color: Colors.white.withOpacity(0.9),
+                      letterSpacing: 10,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'BY G9 INC.',
+                    style: GoogleFonts.raleway(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: StitchColors.g9Blue,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'BY G9 INC.',
-                style: GoogleFonts.raleway(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: StitchColors.g9Blue,
-                  letterSpacing: 4,
-                ),
+            ),
+            const SizedBox(height: 80),
+            // Loading Indicator
+            const SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(
+                color: StitchColors.g9Blue,
+                strokeWidth: 2,
               ),
-              const SizedBox(height: 64),
-              // Loading Indicator
-              const SizedBox(
-                width: 32,
-                height: 32,
-                child: CircularProgressIndicator(
-                  color: StitchColors.g9Blue,
-                  strokeWidth: 2,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
