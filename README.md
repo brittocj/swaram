@@ -1,6 +1,6 @@
 # swaram
 
-A new Flutter project.
+A sound analysis tool.
 
 ## Getting Started
 
