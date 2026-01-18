@@ -1,0 +1,15 @@
+00:00 +0: loading C:/Users/Britto/Documents/Works/Flutter/swaram/test/noise_service_test.dart
+lib/logic/noise_service.dart:47:39: Error: The getter 'noiseStream' isn't defined for the class 'NoiseMeter'.
+ - 'NoiseMeter' is from 'package:noise_meter/noise_meter.dart' ('../../../../AppData/Local/Pub/Cache/hosted/pub.dev/noise_meter-5.1.0/lib/noise_meter.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'noiseStream'.
+    _noiseSubscription = _noiseMeter!.noiseStream.listen(
+                                      ^^^^^^^^^^^
+00:00 +0 -1: loading C:/Users/Britto/Documents/Works/Flutter/swaram/test/noise_service_test.dart [E]
+  Failed to load "C:/Users/Britto/Documents/Works/Flutter/swaram/test/noise_service_test.dart":
+  Compilation failed for testPath=C:/Users/Britto/Documents/Works/Flutter/swaram/test/noise_service_test.dart: lib/logic/noise_service.dart:47:39: Error: The getter 'noiseStream' isn't defined for the class 'NoiseMeter'.
+   - 'NoiseMeter' is from 'package:noise_meter/noise_meter.dart' ('../../../../AppData/Local/Pub/Cache/hosted/pub.dev/noise_meter-5.1.0/lib/noise_meter.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'noiseStream'.
+      _noiseSubscription = _noiseMeter!.noiseStream.listen(
+                                        ^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
